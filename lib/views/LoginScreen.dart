@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:get/get.dart';
@@ -42,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
           title: 'Success', // Custom title for success
           backgroundColor: Colors.blue, // Custom color for success
         );
-        Get.offAll(() => const DashboardScreen());
       } else {
         showCustomSnackBar(
           message: 'Incorrect Email or Password!',
@@ -58,41 +58,43 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(40),
-              child: Text(
-                'Sappat',
-                style: TextStyle(
-                  fontSize:
-                      32, // Set the font size to 24 (you can adjust this value)
-                  fontWeight: FontWeight
-                      .bold, // Set the font weight (bold in this case)
-                  fontFamily:
-                      'Poppins', // Optionally specify a custom font family
-                  color: Colors.blue, // Set the text color to blue
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(horizontalPadding),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: defaultHeight + 30),
+                Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Image.asset(
+                      '${assets}sappat_logo.png',
+                      height: 100,
+                      fit: BoxFit.fitWidth,
+                      color: Colors.blue, // Tint color
+                      colorBlendMode: BlendMode.srcATop, // Blend mode
+                    )),
+                InputWidget(
+                    hintText: 'Email',
+                    controller: _emailController,
+                    obscureText: false),
+                const SizedBox(height: 24),
+                InputWidget(
+                    hintText: 'Password',
+                    controller: _passwordController,
+                    obscureText: true),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity, // Full width
+                  child: ElevatedButton(
+                    onPressed: _login,
+                    child: const Text('Sign In'),
+                  ),
                 ),
-              ),
+              ],
             ),
-            InputWidget(
-                hintText: 'Email',
-                controller: _emailController,
-                obscureText: false),
-            const SizedBox(height: 24),
-            InputWidget(
-                hintText: 'Password',
-                controller: _passwordController,
-                obscureText: true),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text('Sign In'),
-            ),
-          ],
+          ),
         ),
       ),
     );

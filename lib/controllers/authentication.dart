@@ -4,16 +4,22 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:sappat_v1_flutter/views/LoginScreen.dart';
+import 'package:sappat_v1_flutter/views/RootScreen.dart';
 import 'package:sappat_v1_flutter/views/widgets/snackBar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sappat_v1_flutter/views/DashboardScreen.dart';
 
 class AuthenticationController extends GetxController {
-  final token = ''.obs;
-  final localStorage = GetStorage();
+  final Map<String, dynamic> user = {
+    'user_id': '',
+    'token': '',
+    'user': '',
+    'user_type': '',
+    'permissions': []
+  };
 
-  // Using FlutterSecureStorage for storing the token
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   Future<bool> login({required String email, required String password}) async {
     try {
@@ -37,12 +43,16 @@ class AuthenticationController extends GetxController {
 
         // Check if the token exists in the response
         if (responseData.containsKey('token')) {
-          token.value = responseData['token'];
+          for (var key in user.keys) {
+            user[key] = responseData[key];
+          }
+          await secureStorage.write(key: 'token', value: user['token']);
+          await secureStorage.write(
+              key: 'user_id', value: user['user_id'].toString());
+          await secureStorage.write(
+              key: 'user_type', value: user['user_type'].toString());
 
-          // Save token in secure storage
-          await _secureStorage.write(key: 'token', value: token.value);
-
-          // Navigate to Dashboard
+          Get.offAll(() => const RootScreen());
           return true;
         } else {
           print('Token not found in response');
@@ -61,12 +71,13 @@ class AuthenticationController extends GetxController {
 
   // Optionally, a method to retrieve the token from storage
   Future<String?> getToken() async {
-    return await _secureStorage.read(key: 'token');
+    return await secureStorage.read(key: 'token');
   }
 
   // Optionally, a method to clear the token when logging out
   Future<void> logout() async {
-    await _secureStorage.delete(key: 'token');
-    token.value = '';
+    print(await secureStorage.read(key: 'token'));
+    await secureStorage.delete(key: 'token');
+    Get.offAll(() => const LoginScreen());
   }
 }

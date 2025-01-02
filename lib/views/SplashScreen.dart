@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:sappat_v1_flutter/views/LoginScreen.dart';
 import 'package:sappat_v1_flutter/views/DashboardScreen.dart';
+import 'package:sappat_v1_flutter/views/RootScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,14 +22,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateToNextScreen() async {
     // Simulating a delay for the splash screen
-    await Future.delayed(const Duration(seconds: 2));
+    var seconds = 1;
+    await Future.delayed(Duration(seconds: seconds));
 
     // Check if the token exists in storage
     final storage = GetStorage();
     bool hasToken = storage.read('token') != null;
 
     // Navigate to the appropriate screen
-    Get.offAll(() => hasToken ? const DashboardScreen() : const LoginScreen());
+    Get.offAll(() => const LoginScreen());
   }
 
   @override
